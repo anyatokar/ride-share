@@ -17,7 +17,7 @@
 # Copy your list from above, and in this section
 # determine what data structure each layer should have:
 #   drivers_hash = hash
-#   each driver_id(key) within it contains array(value) of 
+#   each driver_id(key) within it contains array(value) of
 #   hashes which contain ride-specific info
 ########################################################
 # Step 3: Make the data structure!
@@ -32,25 +32,19 @@
 drivers_hash = {
     DR0001: [
         {
-            day: 3,
-            month: 2,
-            year: 2016,
+            date: "3rd Feb 2016",
             cost: 10,
             rider_id: "RD0003",
             rating: 3
         },
         {
-            day: 3,
-            month: 2,
-            year: 2016,
+            date: "3rd Feb 2016",
             cost: 30,
             rider_id: "RD0015",
             rating: 4
         },
         {
-            day: 5,
-            month: 2,
-            year: 2016,
+            date: "5th Feb 2016",
             cost: 45,
             rider_id: "RD0003",
             rating: 2
@@ -58,25 +52,19 @@ drivers_hash = {
     ],
     DR0002: [
         {
-            day: 3,
-            month: 2,
-            year: 2016,
+            date: "3rd Feb 2016",
             cost: 25,
             rider_id: "RD0073",
             rating: 5
         },
         {
-            day: 4,
-            month: 2,
-            year: 2016,
+            date: "4th Feb 2016",
             cost: 15,
             rider_id: "RD0013",
             rating: 1
         },
         {
-            day: 5,
-            month: 2,
-            year: 2016,
+            date: "5th Feb 2016",
             cost: 35,
             rider_id: "RD0066",
             rating: 3
@@ -84,17 +72,13 @@ drivers_hash = {
     ],
     DR0003: [
         {
-            day: 4,
-            month: 2,
-            year: 2016,
+            date: "4th Feb 2016",
             cost: 5,
             rider_id: "RD0066",
             rating: 5
         },
         {
-            day: 5,
-            month: 2,
-            year: 2016,
+            date: "5th Feb 2016",
             cost: 50,
             rider_id: "RD0003",
             rating: 2
@@ -102,25 +86,19 @@ drivers_hash = {
     ],
     DR0004: [
         {
-            day: 3,
-            month: 2,
-            year: 2016,
+            date: "3rd Feb 2016",
             cost: 5,
             rider_id: "RD0022",
             rating: 5
         },
         {
-            day: 4,
-            month: 2,
-            year: 2016,
+            date: "4th Feb 2016",
             cost: 10,
             rider_id: "RD0022",
             rating: 4
         },
         {
-            day: 5,
-            month: 2,
-            year: 2016,
+            date: "5th Feb 2016",
             cost: 20,
             rider_id: "RD0073",
             rating: 5
@@ -134,11 +112,11 @@ def line
   puts "########################################################"
 end
 
-# the number of rides each driver has given -----------------------------------
-def num_of_rides_method(driver_id, drivers_hash)
-  return (drivers_hash[driver_id]).length
-end
-line
+# # the number of rides each driver has given -----------------------------------
+# def num_of_rides_method(driver_id, drivers_hash)
+#   return (drivers_hash[driver_id]).length
+# end
+# line
 
 # the total amount of money each driver has made -----------------------------------
 def income_method(rides_array)
@@ -160,8 +138,14 @@ def highest_income_method(tallies_array_of_hashes)
 end
 
 # Which driver has the highest average rating? -----------------------------------
+# this returns the first value, does not handle ties.
 def highest_average_rating_method(tallies_array_of_hashes)
   return tallies_array_of_hashes.max_by { |tally_hash| tally_hash[:average_rating] }[:driver_id]
+end
+
+# For each driver, on which day did they make the most money? -----------------------------------
+def date_highest_income_method(rides_array)
+  rides_array.max_by { |ride_hash| ride_hash[:cost] }[:date]
 end
 
 # runs all the methods -----------------------------------
@@ -169,11 +153,13 @@ def summary(drivers_hash)
   tallies_array_of_hashes = Array.new
   drivers_hash.each do |driver_id, rides_array|
 
-    num_of_rides = num_of_rides_method(driver_id, drivers_hash)
+    num_of_rides = (drivers_hash[driver_id]).length
     income = income_method(rides_array)
     average_rating = average_rating_method(rides_array, num_of_rides)
+    date_highest_income = date_highest_income_method(rides_array)
 
     tallies_hash = {
+        date_highest_income: date_highest_income,
         driver_id: driver_id,
         income: income,
         average_rating: average_rating
@@ -182,7 +168,8 @@ def summary(drivers_hash)
 
     puts "Driver with id #{driver_id} gave #{num_of_rides} ride(s) and \
 made $#{income}.
-On average, their rating was #{average_rating} stars."
+On average, their rating was #{average_rating} stars.
+They made the most money on #{date_highest_income}."
     puts "------"
   end
 
