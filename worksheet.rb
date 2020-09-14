@@ -112,12 +112,6 @@ def line
   puts "########################################################"
 end
 
-# # the number of rides each driver has given -----------------------------------
-# def num_of_rides_method(driver_id, drivers_hash)
-#   return (drivers_hash[driver_id]).length
-# end
-# line
-
 # the total amount of money each driver has made -----------------------------------
 def income_method(rides_array)
   return rides_array.reduce(0) { |sum, ride_hash| sum + ride_hash[:cost] }
@@ -153,7 +147,7 @@ def summary(drivers_hash)
   tallies_array_of_hashes = Array.new
   drivers_hash.each do |driver_id, rides_array|
 
-    num_of_rides = (drivers_hash[driver_id]).length
+    num_of_rides = (drivers_hash[driver_id]).length # the number of rides each driver has given -----------------------------------
     income = income_method(rides_array)
     average_rating = average_rating_method(rides_array, num_of_rides)
     date_highest_income = date_highest_income_method(rides_array)
