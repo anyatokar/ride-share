@@ -2,17 +2,23 @@
 # Step 1: Establish the layers
 
 # In this section of the file, as a series of comments,
-# create a list of the layers you identify.
+# create a list of the layers you identify:
+  #driver_id, rides, date, cost, rider_id, rating
 # Which layers are nested in each other?
+  # driver id < rides < date - cost - rider_id - rating
 # Which layers of data "have" within it a different layer?
+  # each ride has ride-specific info within it
 # Which layers are "next" to each other?
+# driver_ids and date - cost - rider_id - rating
 
 ########################################################
 # Step 2: Assign a data structure to each layer
 
 # Copy your list from above, and in this section
-# determine what data structure each layer should have
-
+# determine what data structure each layer should have:
+#   drivers_hash = hash
+#   each driver_id(key) within it contains array(value) of 
+#   hashes which contain ride-specific info
 ########################################################
 # Step 3: Make the data structure!
 
@@ -22,13 +28,169 @@
 # You should be copying and pasting the literal data
 # into this data structure, such as "DR0004"
 # and "3rd Feb 2016" and "RD0022"
+#
+drivers_hash = {
+    DR0001: [
+        {
+            day: 3,
+            month: 2,
+            year: 2016,
+            cost: 10,
+            rider_id: "RD0003",
+            rating: 3
+        },
+        {
+            day: 3,
+            month: 2,
+            year: 2016,
+            cost: 30,
+            rider_id: "RD0015",
+            rating: 4
+        },
+        {
+            day: 5,
+            month: 2,
+            year: 2016,
+            cost: 45,
+            rider_id: "RD0003",
+            rating: 2
+        }
+    ],
+    DR0002: [
+        {
+            day: 3,
+            month: 2,
+            year: 2016,
+            cost: 25,
+            rider_id: "RD0073",
+            rating: 5
+        },
+        {
+            day: 4,
+            month: 2,
+            year: 2016,
+            cost: 15,
+            rider_id: "RD0013",
+            rating: 1
+        },
+        {
+            day: 5,
+            month: 2,
+            year: 2016,
+            cost: 35,
+            rider_id: "RD0066",
+            rating: 3
+        }
+    ],
+    DR0003: [
+        {
+            day: 4,
+            month: 2,
+            year: 2016,
+            cost: 5,
+            rider_id: "RD0066",
+            rating: 5
+        },
+        {
+            day: 5,
+            month: 2,
+            year: 2016,
+            cost: 50,
+            rider_id: "RD0003",
+            rating: 2
+        }
+    ],
+    DR0004: [
+        {
+            day: 3,
+            month: 2,
+            year: 2016,
+            cost: 5,
+            rider_id: "RD0022",
+            rating: 5
+        },
+        {
+            day: 4,
+            month: 2,
+            year: 2016,
+            cost: 10,
+            rider_id: "RD0022",
+            rating: 4
+        },
+        {
+            day: 5,
+            month: 2,
+            year: 2016,
+            cost: 20,
+            rider_id: "RD0073",
+            rating: 5
+        }
+    ]
+}
 
 ########################################################
 # Step 4: Total Driver's Earnings and Number of Rides
+def line
+  puts "########################################################"
+end
 
-# Use an iteration blocks to print the following answers:
-# - the number of rides each driver has given
-# - the total amount of money each driver has made
-# - the average rating for each driver
-# - Which driver made the most money?
-# - Which driver has the highest average rating?
+# the number of rides each driver has given -----------------------------------
+def num_of_rides_method(driver_id, drivers_hash)
+  return (drivers_hash[driver_id]).length
+end
+line
+
+# the total amount of money each driver has made -----------------------------------
+def income_method(rides_array)
+  return rides_array.reduce(0) { |sum, ride_hash| sum + ride_hash[:cost] }
+end
+
+# the average rating for each driver -----------------------------------
+
+def average_rating_method(rides_array, num_of_rides)
+  sum_ratings = rides_array.reduce(0) { |sum, ride_hash|
+    sum + ride_hash[:rating] }
+  return (sum_ratings / num_of_rides.to_f).round(1) # why can't this be included in the reduce block?
+end
+
+# Which driver made the most money? -----------------------------------
+# this returns the first value, does not handle ties.
+def highest_income_method(tallies_array_of_hashes)
+  return tallies_array_of_hashes.max_by { |tally_hash| tally_hash[:income] }[:driver_id]
+end
+
+# Which driver has the highest average rating? -----------------------------------
+def highest_average_rating_method(tallies_array_of_hashes)
+  return tallies_array_of_hashes.max_by { |tally_hash| tally_hash[:average_rating] }[:driver_id]
+end
+
+# runs all the methods -----------------------------------
+def summary(drivers_hash)
+  tallies_array_of_hashes = Array.new
+  drivers_hash.each do |driver_id, rides_array|
+
+    num_of_rides = num_of_rides_method(driver_id, drivers_hash)
+    income = income_method(rides_array)
+    average_rating = average_rating_method(rides_array, num_of_rides)
+
+    tallies_hash = {
+        driver_id: driver_id,
+        income: income,
+        average_rating: average_rating
+    }
+    tallies_array_of_hashes << tallies_hash
+
+    puts "Driver with id #{driver_id} gave #{num_of_rides} ride(s) and \
+made $#{income}.
+On average, their rating was #{average_rating} stars."
+    puts "------"
+  end
+
+  highest_income = highest_income_method(tallies_array_of_hashes)
+  highest_average_rating = highest_average_rating_method(tallies_array_of_hashes)
+
+  puts "Driver with id #{highest_income} made the most money."
+  puts "Driver with id #{highest_average_rating} \
+had the highest rating, on average."
+end
+summary(drivers_hash)
